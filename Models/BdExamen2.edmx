@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DBExamenModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Camion">
+          <Key>
+            <PropertyRef Name="Placa" />
+          </Key>
+          <Property Name="Placa" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Marca" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NumeroEjes" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FotoPesaje">
+          <Key>
+            <PropertyRef Name="idFotoPesaje" />
+          </Key>
+          <Property Name="idFotoPesaje" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ImagenVehiculo" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="idPesaje" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Pesaje">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="FechaPesaje" Type="date" Nullable="false" />
+          <Property Name="PlacaCamion" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Peso" Type="real" Nullable="false" />
+          <Property Name="Estacion" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_FotoPesaje_Pesaje">
+          <End Role="Pesaje" Type="Self.Pesaje" Multiplicity="1" />
+          <End Role="FotoPesaje" Type="Self.FotoPesaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pesaje">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="FotoPesaje">
+              <PropertyRef Name="idPesaje" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pesaje_Camion">
+          <End Role="Camion" Type="Self.Camion" Multiplicity="1" />
+          <End Role="Pesaje" Type="Self.Pesaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camion">
+              <PropertyRef Name="Placa" />
+            </Principal>
+            <Dependent Role="Pesaje">
+              <PropertyRef Name="PlacaCamion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DBExamenModelStoreContainer">
+          <EntitySet Name="Camion" EntityType="Self.Camion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FotoPesaje" EntityType="Self.FotoPesaje" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pesaje" EntityType="Self.Pesaje" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_FotoPesaje_Pesaje" Association="Self.FK_FotoPesaje_Pesaje">
+            <End Role="Pesaje" EntitySet="Pesaje" />
+            <End Role="FotoPesaje" EntitySet="FotoPesaje" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Pesaje_Camion" Association="Self.FK_Pesaje_Camion">
+            <End Role="Camion" EntitySet="Camion" />
+            <End Role="Pesaje" EntitySet="Pesaje" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DBExamenModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Camion">
+          <Key>
+            <PropertyRef Name="Placa" />
+          </Key>
+          <Property Name="Placa" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Marca" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NumeroEjes" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Pesajes" Relationship="Self.FK_Pesaje_Camion" FromRole="Camion" ToRole="Pesaje" />
+        </EntityType>
+        <EntityType Name="FotoPesaje">
+          <Key>
+            <PropertyRef Name="idFotoPesaje" />
+          </Key>
+          <Property Name="idFotoPesaje" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImagenVehiculo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="idPesaje" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Pesaje" Relationship="Self.FK_FotoPesaje_Pesaje" FromRole="FotoPesaje" ToRole="Pesaje" />
+        </EntityType>
+        <EntityType Name="Pesaje">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="FechaPesaje" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PlacaCamion" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Peso" Type="Single" Nullable="false" />
+          <Property Name="Estacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Camion" Relationship="Self.FK_Pesaje_Camion" FromRole="Pesaje" ToRole="Camion" />
+          <NavigationProperty Name="FotoPesajes" Relationship="Self.FK_FotoPesaje_Pesaje" FromRole="Pesaje" ToRole="FotoPesaje" />
+        </EntityType>
+        <Association Name="FK_Pesaje_Camion">
+          <End Role="Camion" Type="Self.Camion" Multiplicity="1" />
+          <End Role="Pesaje" Type="Self.Pesaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camion">
+              <PropertyRef Name="Placa" />
+            </Principal>
+            <Dependent Role="Pesaje">
+              <PropertyRef Name="PlacaCamion" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FotoPesaje_Pesaje">
+          <End Role="Pesaje" Type="Self.Pesaje" Multiplicity="1" />
+          <End Role="FotoPesaje" Type="Self.FotoPesaje" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pesaje">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="FotoPesaje">
+              <PropertyRef Name="idPesaje" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DBExamenEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Camions" EntityType="Self.Camion" />
+          <EntitySet Name="FotoPesajes" EntityType="Self.FotoPesaje" />
+          <EntitySet Name="Pesajes" EntityType="Self.Pesaje" />
+          <AssociationSet Name="FK_Pesaje_Camion" Association="Self.FK_Pesaje_Camion">
+            <End Role="Camion" EntitySet="Camions" />
+            <End Role="Pesaje" EntitySet="Pesajes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FotoPesaje_Pesaje" Association="Self.FK_FotoPesaje_Pesaje">
+            <End Role="Pesaje" EntitySet="Pesajes" />
+            <End Role="FotoPesaje" EntitySet="FotoPesajes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DBExamenModelStoreContainer" CdmEntityContainer="DBExamenEntities">
+          <EntitySetMapping Name="Camions">
+            <EntityTypeMapping TypeName="DBExamenModel.Camion">
+              <MappingFragment StoreEntitySet="Camion">
+                <ScalarProperty Name="Placa" ColumnName="Placa" />
+                <ScalarProperty Name="Marca" ColumnName="Marca" />
+                <ScalarProperty Name="NumeroEjes" ColumnName="NumeroEjes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FotoPesajes">
+            <EntityTypeMapping TypeName="DBExamenModel.FotoPesaje">
+              <MappingFragment StoreEntitySet="FotoPesaje">
+                <ScalarProperty Name="idFotoPesaje" ColumnName="idFotoPesaje" />
+                <ScalarProperty Name="ImagenVehiculo" ColumnName="ImagenVehiculo" />
+                <ScalarProperty Name="idPesaje" ColumnName="idPesaje" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pesajes">
+            <EntityTypeMapping TypeName="DBExamenModel.Pesaje">
+              <MappingFragment StoreEntitySet="Pesaje">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FechaPesaje" ColumnName="FechaPesaje" />
+                <ScalarProperty Name="PlacaCamion" ColumnName="PlacaCamion" />
+                <ScalarProperty Name="Peso" ColumnName="Peso" />
+                <ScalarProperty Name="Estacion" ColumnName="Estacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
